@@ -1,0 +1,177 @@
+:root {
+    --green-light: hsl(123deg, 47%, 74%);
+    --green-dark: #2e7f32;
+    --blue-light: hsl(210deg, 47%, 74%);
+    --blue-dark: #2e577f;
+    --orange-light: hsl(34deg, 93%, 77%);
+    --orange-dark: #b66a07;
+    --purple-light: hsl(231deg, 44%, 76%);
+    --purple-dark: #334084;
+    --yellow-light: hsl(54deg, 76%, 79%);
+    --yellow-dark: #afa018;
+    --brown-light: hsl(20deg, 41%, 69%);
+    --brown-dark: #68402c;
+    --red-light: hsl(0deg, 59%, 76%);
+    --red-dark: #922626;
+    --pink-light: hsl(295deg, 42%, 72%);
+    --pink-dark: #6e2f74;
+    --white-light: hsl(0deg, 0%, 100%);
+    --white-dark: #999999;
+}
+
+body {
+    font-family: system-ui;
+}
+
+.demo {
+    display: grid;
+    min-height: 100vh;
+    place-content: center;
+}
+
+.orbit-container {
+    --center-size: 15em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.orbit-center {
+    width: var(--center-size);
+    height: var(--center-size);
+    position: absolute;
+    z-index: 10;
+}
+
+.orbit-center img {
+    border-radius: var(--center-size);
+    position: absolute;
+    max-width: 100%;
+    display: block;
+    transition: opacity 500ms;
+}
+
+.orbit-center img:not(:first-child):hover {
+    opacity: 0;
+  }
+
+.orbit {
+    --separation: calc(360deg / var(--count));
+    --radius: 15em;
+    --size: 6em;
+    --speed: 7s;
+    --intro-duration: 3s;
+
+    display: grid;
+    place-items: center;
+    position: absolute;
+    list-style-type: none;
+}
+
+.orbit:hover li {
+    animation-play-state: paused;
+}
+
+.orbit>li {
+    --angle-from: calc(calc(var(--separation) * var(--index)) - 90deg);
+    --angle-to: calc(360deg + var(--angle-from));
+
+    --intro-planet-duration: calc(var(--intro-duration) / var(--count));
+    --intro-delay: calc(var(--intro-planet-duration) * calc(calc(var(--count) - var(--index)) - 1));
+
+    --color: red;
+    --color-dark: darkred;
+
+    position: absolute;
+
+    animation:
+        orbit-intro var(--intro-planet-duration) linear var(--intro-delay) 1 normal forwards,
+        orbit var(--speed) linear var(--intro-duration) infinite;
+}
+
+@keyframes orbit-intro {
+    0% {
+        transform: rotate(var(--angle-from)) translateX(0px) rotate(calc(-1 * var(--angle-from)));
+    }
+
+    70% {
+        transform: rotate(var(--angle-from)) translateX(calc(var(--radius) + var(--size))) rotate(calc(-1 * var(--angle-from)));
+    }
+
+    100% {
+        transform: rotate(var(--angle-from)) translateX(var(--radius)) rotate(calc(-1 * var(--angle-from)));
+    }
+}
+
+@keyframes orbit {
+    from {
+        transform: rotate(var(--angle-from)) translateX(var(--radius)) rotate(calc(-1 * var(--angle-from)));
+    }
+
+    to {
+        transform: rotate(var(--angle-to)) translateX(var(--radius)) rotate(calc(-1 * var(--angle-to)));
+    }
+}
+
+.planet {
+    display: grid;
+    place-items: center;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    background-color: var(--color);
+    color: white;
+
+    animation-name: pulse;
+    animation-duration: 1.5s;
+    animation-timing-function: ease;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-delay: var(--intro-delay);
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1.0);
+    }
+
+    to {
+        transform: scale(1.2);
+    }
+}
+
+.orbit li:hover>.planet {
+    animation-play-state: paused;
+    background-color: var(--color-dark);
+    transition: background-color 200ms;
+}
+
+.planet p,
+.planet i {
+    position: absolute;
+}
+
+
+.planet p {
+    opacity: 0;
+    transition: opacity 200ms;
+    color: var(--white-light);
+    text-align: center;
+}
+
+.orbit li:hover p {
+    opacity: 1;
+    transition: opacity 200ms;
+}
+
+.planet i {
+    opacity: 1;
+    transition: opacity 200ms;
+    font-size: calc(var(--size) * 0.45);
+    color: var(--white-dark);
+}
+
+.orbit li:hover i {
+    opacity: 0;
+    transition: opacity 200ms;
+}
